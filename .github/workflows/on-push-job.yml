@@ -1,0 +1,39 @@
+name: Till TA Reusable Workflows
+
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+
+on:
+  workflow_call:
+
+jobs:
+  run-lint-tests:
+    runs-on: ubuntu-latest # or windows-latest, macos-latest
+
+    steps:
+      - uses: actions/checkout@v2 # download code to github actions machine
+
+      - uses: actions/setup-node@v2 # setup nodejs
+        with:
+         node-version: '16'
+
+      - name: Install dependencies # Install dependancies
+        run: npm ci
+
+      - name: Run Prettier check # Prettier check
+        run: npm run prettier:check
+
+      - name: Run Eslint check rule # Eslint check
+        run: npm run lint:check
+        
+  check-branch-name:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Branch Naming Check
+      run: |
+        echo ${{ github.ref }}
+        if [[ ${{ github.ref }} == refs/heads/TA* || ${{ github.ref }} == master ]]; then
+          echo "Good, you are following till ta branching convention."
+        else
+          echo "You havent linked PR to ticket by following TA/ branching convention"
+          exit 1
+        fi
